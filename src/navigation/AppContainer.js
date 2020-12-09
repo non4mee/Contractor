@@ -1,0 +1,26 @@
+import React, { useRef, useEffect, useState } from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+
+import MainStack from './MainStack'
+
+function AppContainer() {
+  const routeNameRef = useRef();
+  const navigationRef = useRef();
+  const [initialRouteName, setInitialRouteName] = useState(null);
+    return (
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => routeNameRef.current = navigationRef.current.getCurrentRoute().name}
+        onStateChange={() => {
+          const previousRouteName = routeNameRef.current;
+          const currentRouteName = navigationRef.current.getCurrentRoute().name
+          if (previousRouteName !== currentRouteName) {}
+          routeNameRef.current = currentRouteName;
+        }}
+      >
+        <MainStack initialRouteName={initialRouteName} />
+      </NavigationContainer>
+    );
+}
+
+ export default AppContainer;
