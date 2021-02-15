@@ -1,14 +1,15 @@
-import React from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import * as React from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
+
+import Profile from '../screens/ProfileScreen'
+import { StackStyle } from './themes'
 
 const Stack = createStackNavigator();
 
-function ProfileStack() {
+export default function ProfileStack() {
   return (
-    <Stack.Navigator screenOptions={StackStyle} initialRouteName="Profile">
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Navigator screenOptions={StackStyle}>
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
-  );
+  )
 }
-
-export default ProfileStack;

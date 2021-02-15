@@ -1,14 +1,24 @@
-import React from 'react';
-import {} from 'react-native';
-
+import * as React from 'react';
+import {Provider} from 'react-redux'
+import { StatusBar } from 'react-native'
 import AppContainer from './src/navigation/AppContainer'
+import { createStore, applyMiddleware } from 'redux'
+import Thunk from 'redux-thunk'
+import platform from './src/helpers/platform'
 
-const App: () => React$Node = () => {
+
+import rootReducer from './src/rootReducer'
+
+const store = createStore(rootReducer, applyMiddleware(Thunk))
+
+export default function App() {
   return (
-    <>
+    <Provider store={store}>
+      <StatusBar
+        backgroundColor={platform.brandSuccess}
+        barStyle="light-content"
+      />
       <AppContainer />
-    </>
-  );
-};
-
-export default App;
+    </Provider>
+  )
+}

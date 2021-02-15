@@ -1,26 +1,46 @@
-import React, { useRef, useEffect, useState } from 'react'
-import { NavigationContainer } from '@react-navigation/native'
+import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import SplashScreen from 'react-native-splash-screen'
+import AsyncStorage from '@react-native-community/async-storage'
 
 import MainStack from './MainStack'
+import { signIn } from '../actions/authActions'
+import { connect } from 'react-redux'
 
-function AppContainer() {
-  const routeNameRef = useRef();
-  const navigationRef = useRef();
-  const [initialRouteName, setInitialRouteName] = useState(null);
-    return (
-      <NavigationContainer
-        ref={navigationRef}
-        onReady={() => routeNameRef.current = navigationRef.current.getCurrentRoute().name}
-        onStateChange={() => {
-          const previousRouteName = routeNameRef.current;
-          const currentRouteName = navigationRef.current.getCurrentRoute().name
-          if (previousRouteName !== currentRouteName) {}
-          routeNameRef.current = currentRouteName;
-        }}
-      >
-        <MainStack initialRouteName={initialRouteName} />
-      </NavigationContainer>
-    );
+function AppContainer({ signIn }) {
+  const [initialRouteName, setInitialRouteName] = useState('Welcome')
+  const [loading, setLoading] = useState(true)
+  useEffect(() => {
+    getUser()
+  }, [])
+
+  const getUser = async () => {
+    try {
+      const userString = await AsyncStorage.getItem('user')
+      const userObject = JSON.parse(userString)
+      console.log('userObject', userObject)
+      if (userObject) {
+        signIn(userObject)
+        setInitialRouteName('Home')
+      }
+      SplashScreen.hide()
+      setLoading(false)
+    } catch (e) {
+      console.log('AsyncStorage, error', e)
+      SplashScreen.hide()
+      setLoading(false)
+    }
+  }
+  if (loading) return null
+  return (
+    <NavigationContainer>
+      <MainStack initialRouteName={initialRouteName} />
+    </NavigationContainer>
+  )
 }
 
- export default AppContainer;
+const mapDispatchToProps = {
+  signIn
+}
+
+export default connect(null, mapDispatchToProps)(AppContainer)
